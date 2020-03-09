@@ -1,4 +1,4 @@
-#import "AccountmanagerPlugin.h"
+#import "AccountManagerPlugin.h"
 #if __has_include(<accountmanager/accountmanager-Swift.h>)
 #import <accountmanager/accountmanager-Swift.h>
 #else
@@ -8,8 +8,8 @@
 #import "accountmanager-Swift.h"
 #endif
 
-@implementation AccountmanagerPlugin
+@implementation AccountManagerPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftAccountmanagerPlugin registerWithRegistrar:registrar];
+  [SwiftAccountManagerPlugin registerWithRegistrar:registrar];
 }
 @end

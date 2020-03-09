@@ -8,8 +8,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-/** AccountmanagerPlugin */
-public class AccountmanagerPlugin: FlutterPlugin, MethodCallHandler {
+/** AccountManagerPlugin */
+public class AccountManagerPlugin: FlutterPlugin, MethodCallHandler {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -17,7 +17,7 @@ public class AccountmanagerPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "accountmanager")
+    channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "accountManager")
     channel.setMethodCallHandler(this);
   }
 
@@ -33,8 +33,8 @@ public class AccountmanagerPlugin: FlutterPlugin, MethodCallHandler {
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "accountmanager")
-      channel.setMethodCallHandler(AccountmanagerPlugin())
+      val channel = MethodChannel(registrar.messenger(), "accountManager")
+      channel.setMethodCallHandler(AccountManagerPlugin())
     }
   }
 

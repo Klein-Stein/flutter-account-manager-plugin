@@ -1,10 +1,10 @@
 import Flutter
 import UIKit
 
-public class SwiftAccountmanagerPlugin: NSObject, FlutterPlugin {
+public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "accountmanager", binaryMessenger: registrar.messenger())
-    let instance = SwiftAccountmanagerPlugin()
+    let channel = FlutterMethodChannel(name: "accountManager", binaryMessenger: registrar.messenger())
+    let instance = SwiftAccountManagerPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
 
