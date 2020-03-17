@@ -26,7 +26,7 @@ flutter:
   # adding or updating assets for this project.
   plugin:
     androidPackage: com.contedevel.accountmanager
-    pluginClass: AccountmanagerPlugin
+    pluginClass: AccountManagerPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
