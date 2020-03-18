@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:accountmanager/accountmanager.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() => runApp(MyApp());
@@ -19,6 +20,11 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
+  Future<String> getAccounts() async {
+    final accounts = await AccountManager.getAccounts();
+    return accounts.toString();
+  }
+
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion = 'Not granted';
@@ -27,10 +33,10 @@ class _MyAppState extends State<MyApp> {
     if (permission == PermissionStatus.unknown || permission == PermissionStatus.denied) {
       final permissions = await PermissionHandler().requestPermissions([PermissionGroup.contacts]);
       if (permissions[PermissionGroup.contacts] == PermissionStatus.granted) {
-        platformVersion = 'Granted';
+        platformVersion = await getAccounts();
       }
     } else if (permission == PermissionStatus.granted) {
-      platformVersion = 'Granted';
+      platformVersion = await getAccounts();
     }
 
     // If the widget was removed from the tree while the asynchronous platform
