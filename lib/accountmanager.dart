@@ -24,6 +24,11 @@ class AccountManager {
     });
   }
 
+  static Future<List<Account>> getAccounts() async {
+    final accounts = await _channel.invokeMapMethod('getAccounts');
+    return [];
+  }
+
   static Future removeAccount(Account account) async {
     await _channel.invokeMethod('removeAccount', {
       _KeyAccountName: account.name,

@@ -6,6 +6,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  permission_handler: '^4.4.0+hotfix.2'
   flutter:
     sdk: flutter
 
