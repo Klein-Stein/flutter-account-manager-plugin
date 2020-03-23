@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:accountmanager/account.dart';
 import 'package:accountmanager/accountmanager.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -47,6 +48,9 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _platformVersion = platformVersion;
     });
+
+    final account = Account('Denis Sologub', 'com.contedevel.account');
+    final result = await AccountManager.addAccount(account);
   }
 
   @override

@@ -1,11 +1,12 @@
 package com.contedevel.accountmanager
 
+import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import androidx.annotation.NonNull
-import androidx.core.app.ActivityCompat
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -16,6 +17,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 /** AccountManagerPlugin */
@@ -34,18 +36,25 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     }
 
     private fun addAccount(call: MethodCall, result: Result) {
-
+        activity?.let {
+            val accountName = call.argument<String>(ACCOUNT_NAME)
+            val accountType = call.argument<String>(ACCOUNT_TYPE)
+            val password = call.argument<String>(PASSWORD)
+            val accountManager = AccountManager.get(it)
+            val account = Account(accountName, accountType)
+            val wasAdded = accountManager.addAccountExplicitly(account, password, null)
+            result.success(wasAdded)
+        }
     }
 
     private fun getAccounts(result: Result) {
+        val accounts = mutableListOf<HashMap<String, String>>()
         activity?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val intent = AccountManager.newChooseAccountIntent(null, null,null, null, null, null, null)
-                ActivityCompat.startActivityForResult(it, intent, REQUEST_CODE, null)
-            }
-
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                val intent = AccountManager.newChooseAccountIntent(null, null,null, null, null, null, null)
+//                ActivityCompat.startActivityForResult(it, intent, REQUEST_CODE, null)
+//            }
             val accountManager = AccountManager.get(it)
-            val accounts = mutableListOf<HashMap<String, String>>()
 
             for (account in accountManager.accounts) {
                 accounts.add(hashMapOf(
@@ -53,18 +62,26 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
                         "TYPE" to account.type
                 ))
             }
-
-            accounts.add(hashMapOf(
-                    "NAME" to "Denis Sologub",
-                    "TYPE" to "com.contedevel.account"
-            ))
-
-            result.success(accounts)
         }
+        result.success(accounts)
     }
 
     private fun removeAccount(call: MethodCall, result: Result) {
+        activity?.let {
+            val accountName = call.argument<String>(ACCOUNT_NAME)
+            val accountType = call.argument<String>(ACCOUNT_TYPE)
+            val accountManager = AccountManager.get(it)
+            val account = Account(accountName, accountType)
 
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+                val future = accountManager.removeAccount(account, {}, Handler())
+                result.success(future.getResult(2, TimeUnit.SECONDS))
+            } else {
+                val wasRemoved = accountManager.removeAccountExplicitly(account)
+                result.success(wasRemoved)
+            }
+        }
+        result.success(false)
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -111,6 +128,9 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     // in the same class.
     companion object {
         private const val REQUEST_CODE = 23
+        private const val ACCOUNT_NAME = "account_name"
+        private const val ACCOUNT_TYPE = "account_type"
+        private const val PASSWORD = "password"
 
         @Suppress("UNUSED")
         @JvmStatic
