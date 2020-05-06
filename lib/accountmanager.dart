@@ -11,11 +11,6 @@ class AccountManager {
   static const String _KeyAccountType = 'account_type';
   static const String _KeyPassword = 'password';
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
   static Future addAccount(Account account, {String password}) async {
     await _channel.invokeMethod('addAccount', {
       _KeyAccountName: account.name,
