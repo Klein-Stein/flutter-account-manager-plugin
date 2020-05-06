@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Handler
 import androidx.annotation.NonNull
-import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -30,8 +29,7 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     private var activity: Activity? = null
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        val engine = flutterPluginBinding.flutterEngine
-        channel = MethodChannel(engine.dartExecutor, "accountManager")
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "accountManager")
         channel.setMethodCallHandler(this)
     }
 
