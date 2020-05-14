@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Handler
 import androidx.annotation.NonNull
+import androidx.core.app.ActivityCompat
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -16,7 +17,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -46,22 +46,17 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     }
 
     private fun getAccounts(result: Result) {
-        val accounts = mutableListOf<HashMap<String, String>>()
-        activity?.let {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                val intent = AccountManager.newChooseAccountIntent(null, null,null, null, null, null, null)
-//                ActivityCompat.startActivityForResult(it, intent, REQUEST_CODE, null)
-//            }
-            val accountManager = AccountManager.get(it)
-
-            for (account in accountManager.accounts) {
-                accounts.add(hashMapOf(
-                        "NAME" to account.name,
-                        "TYPE" to account.type
-                ))
+        if (activity != null) {
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                AccountManager.newChooseAccountIntent(null, null, null, null, null, null, null)
+            } else {
+                AccountManager.newChooseAccountIntent(null, null, null, false, null, null, null, null)
             }
+            ActivityCompat.startActivityForResult(activity!!, intent, REQUEST_CODE, null)
+            result.success(true)
+        } else {
+            result.success(false)
         }
-        result.success(accounts)
     }
 
     private fun removeAccount(call: MethodCall, result: Result) {
@@ -96,7 +91,17 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        return true
+        if (requestCode == REQUEST_CODE) {
+            val account = if (resultCode == Activity.RESULT_OK && data != null) {
+                hashMapOf<String, String>(
+                        "NAME" to data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME),
+                        "TYPE" to data.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE)
+                )
+            } else null
+            channel.invokeMethod("onAccountPicked", account)
+            return true
+        }
+        return false
     }
 
     override fun onDetachedFromActivity() {
