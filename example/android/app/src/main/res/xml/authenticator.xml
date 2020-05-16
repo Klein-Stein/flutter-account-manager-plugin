@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <account-authenticator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="com.contedevel.account"
+    android:accountType="com.contedevel.account.github"
     android:icon="@drawable/ic_stat_name"
     android:smallIcon="@drawable/ic_stat_name"
     android:label="@string/account_label"/>

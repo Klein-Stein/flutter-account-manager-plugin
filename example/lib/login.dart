@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:http/http.dart';
+import 'package:accountmanager/account.dart';
+import 'package:accountmanager/accountmanager.dart';
 import 'dart:async';
 
 import 'g.dart';
+import 'rest.dart';
 
 class LoginWidget extends StatefulWidget {
 
@@ -13,15 +15,30 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginWidgetState extends State<LoginWidget> {
   var _code;
+  var _status = 'Saving...';
 
   Future<void> save() async {
-    var client = new Client();
+    var api = new RestApi();
     try {
-      const url = 'https://github.com/login/oauth/access_token';
-      await client.post(url);
+      var accessToken = await api.fetchAccessToken(_code);
+      if (accessToken != null) {
+        var user = await api.fetchUser(accessToken);
+        if (user != null) {
+          var account = new Account(user.login, 'com.contedevel.account.github');
+          await AccountManager.addAccount(account, password: accessToken.accessToken);
+          if (!mounted) return;
+          setState(() { _status = 'Success!'; });
+        } else {
+          if (!mounted) return;
+          setState(() { _status = 'Failed!'; });
+        }
+      } else {
+        if (!mounted) return;
+        setState(() { _status = 'Failed!'; });
+      }
     }
     finally {
-      client.close();
+      api.close();
     }
   }
 
@@ -41,7 +58,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       );
     }
     return Center(
-        child: const Text('Saving...')
+        child: Text(_status)
     );
   }
 
