@@ -1,4 +1,4 @@
-group 'com.contedevel.accountmanager'
+group 'com.contedevel.flutteraccountmanager'
 version '1.0-SNAPSHOT'
 
 buildscript {

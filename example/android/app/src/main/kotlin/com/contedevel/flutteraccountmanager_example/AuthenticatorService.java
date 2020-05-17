@@ -1,4 +1,4 @@
-package com.contedevel.accountmanager_example;
+package com.contedevel.flutteraccountmanager_example;
 
 import android.app.Service;
 import android.content.Intent;

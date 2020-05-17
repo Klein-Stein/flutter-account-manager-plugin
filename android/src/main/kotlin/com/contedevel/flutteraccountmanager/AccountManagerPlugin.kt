@@ -1,4 +1,4 @@
-package com.contedevel.accountmanager
+package com.contedevel.flutteraccountmanager
 
 import android.accounts.Account
 import android.accounts.AccountManager
