@@ -17,6 +17,12 @@ class _LoginWidgetState extends State<LoginWidget> {
   var _code;
   var _status = 'Saving...';
 
+  void close(Account account) {
+    if (!mounted) return;
+    setState(() { _status = account != null ? 'Success!' : 'Failed!'; });
+    Navigator.pop(context, account);
+  }
+
   Future<void> save() async {
     var api = new RestApi();
     try {
@@ -26,15 +32,12 @@ class _LoginWidgetState extends State<LoginWidget> {
         if (user != null) {
           var account = new Account(user.login, 'com.contedevel.account.github');
           await AccountManager.addAccount(account, password: accessToken.accessToken);
-          if (!mounted) return;
-          setState(() { _status = 'Success!'; });
+          close(account);
         } else {
-          if (!mounted) return;
-          setState(() { _status = 'Failed!'; });
+          close(null);
         }
       } else {
-        if (!mounted) return;
-        setState(() { _status = 'Failed!'; });
+        close(null);
       }
     }
     finally {

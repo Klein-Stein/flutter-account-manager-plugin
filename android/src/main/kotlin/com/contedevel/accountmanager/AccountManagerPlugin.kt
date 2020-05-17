@@ -46,6 +46,20 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     }
 
     private fun getAccounts(result: Result) {
+        activity?.let {
+            val accounts = AccountManager.get(activity).accounts
+            val list = mutableListOf<HashMap<String, String>>()
+            for (account in accounts) {
+                list.add(hashMapOf(
+                        ACCOUNT_NAME to account.name,
+                        ACCOUNT_TYPE to account.type
+                ))
+            }
+            result.success(list)
+        }
+    }
+
+    private fun peekAccounts(result: Result) {
         if (activity != null) {
             val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 AccountManager.newChooseAccountIntent(null, null, null, null, null, null, null)
