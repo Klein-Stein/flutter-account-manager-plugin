@@ -2,7 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
-import 'account.dart';
+class Account {
+  String name;
+  String accountType;
+
+  Account(this.name, this.accountType);
+}
 
 class AccountManager {
   static const MethodChannel _channel = const MethodChannel('accountManager');
