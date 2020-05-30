@@ -25,12 +25,17 @@ class AccountManager {
   }
 
   static Future<List<dynamic>> getAccounts() async {
-    final result = await _channel.invokeListMethod('getAccounts');
-    var accounts = [];
-    for (var item in result) {
-      accounts.add(new Account(item[_KeyAccountName], item[_KeyAccountType]));
+    try {
+      final result = await _channel.invokeListMethod('getAccounts');
+      var accounts = [];
+      for (var item in result) {
+        accounts.add(new Account(item[_KeyAccountName], item[_KeyAccountType]));
+      }
+      return accounts;
+    } catch(e, s) {
+      print(e);
+      print(s);
     }
-    return accounts;
   }
 
   static Future removeAccount(Account account) async {
