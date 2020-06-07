@@ -1,4 +1,4 @@
-package com.contedevel.flutteraccountmanager_example;
+package com.contedevel.accountmanager_example;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

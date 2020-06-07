@@ -17,17 +17,22 @@ class AccountManager {
   static const String _KeyPassword = 'password';
 
   static Future addAccount(Account account, {String password}) async {
-    await _channel.invokeMethod('addAccount', {
-      _KeyAccountName: account.name,
-      _KeyAccountType: account.accountType,
-      _KeyPassword: password
-    });
+    try {
+      await _channel.invokeMethod('addAccount', {
+        _KeyAccountName: account.name,
+        _KeyAccountType: account.accountType,
+        _KeyPassword: password
+      });
+    } catch(e, s) {
+      print(e);
+      print(s);
+    }
   }
 
   static Future<List<dynamic>> getAccounts() async {
     var accounts = [];
     try {
-      final result = await _channel.invokeListMethod('getAccounts');
+      final result = await _channel.invokeMethod('getAccounts');
       for (var item in result) {
         accounts.add(new Account(item[_KeyAccountName], item[_KeyAccountType]));
       }
