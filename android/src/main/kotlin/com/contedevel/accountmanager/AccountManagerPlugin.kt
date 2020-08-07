@@ -29,7 +29,7 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     private var activity: Activity? = null
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "accountManager")
+        channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "accountManager")
         channel.setMethodCallHandler(this)
     }
 

@@ -13,20 +13,20 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
     }
     
     private func addAccount(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        
+        result(true);
     }
     
     private func removeAccount(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        
+        result(true);
     }
     
     private func getAccounts(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-//        var accounts: [[String: Any]] = [];
-//        accounts.append([
-//            constAccountName: "contedevel2010@gmail.com",
-//            constAccountType: "com.contedevel.account"
-//        ]);
-        result("test");
+        var accounts: [[String: Any]] = [];
+        accounts.append([
+            constAccountName: "contedevel2010@gmail.com",
+            constAccountType: "com.contedevel.account"
+        ]);
+        result(accounts);
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
