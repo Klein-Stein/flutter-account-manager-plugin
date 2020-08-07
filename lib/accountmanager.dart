@@ -16,7 +16,7 @@ class AccountManager {
   static const String _KeyAccountType = 'account_type';
   static const String _KeyPassword = 'password';
 
-  static Future addAccount(Account account, {String password}) async {
+  static Future<void> addAccount(Account account, {String password}) async {
     try {
       await _channel.invokeMethod('addAccount', {
         _KeyAccountName: account.name,
@@ -43,7 +43,7 @@ class AccountManager {
     return accounts;
   }
 
-  static Future removeAccount(Account account) async {
+  static Future<void> removeAccount(Account account) async {
     await _channel.invokeMethod('removeAccount', {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType
