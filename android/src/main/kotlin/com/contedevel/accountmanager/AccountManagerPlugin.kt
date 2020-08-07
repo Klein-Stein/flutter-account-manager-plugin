@@ -107,7 +107,7 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (requestCode == REQUEST_CODE) {
             val account = if (resultCode == Activity.RESULT_OK && data != null) {
-                hashMapOf<String, String>(
+                hashMapOf(
                         "NAME" to data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME),
                         "TYPE" to data.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE)
                 )
