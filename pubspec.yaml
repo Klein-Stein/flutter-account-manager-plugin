@@ -28,6 +28,7 @@ flutter:
       package: com.contedevel.accountmanager
       pluginClass: AccountManagerPlugin
     ios:
+      package: com.contedevel.accountmanager
       pluginClass: AccountManagerPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
