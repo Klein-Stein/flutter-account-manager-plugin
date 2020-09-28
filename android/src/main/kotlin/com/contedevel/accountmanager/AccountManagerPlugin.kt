@@ -37,10 +37,9 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         activity?.let {
             val accountName = call.argument<String>(ACCOUNT_NAME)
             val accountType = call.argument<String>(ACCOUNT_TYPE)
-            val password = call.argument<String>(PASSWORD)
             val accountManager = AccountManager.get(it)
             val account = Account(accountName, accountType)
-            val wasAdded = accountManager.addAccountExplicitly(account, password, null)
+            val wasAdded = accountManager.addAccountExplicitly(account, null, null)
             result.success(wasAdded)
         }
     }
@@ -147,7 +146,9 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         private const val REQUEST_CODE = 23
         private const val ACCOUNT_NAME = "account_name"
         private const val ACCOUNT_TYPE = "account_type"
-        private const val PASSWORD = "password"
+        private const val AUTH_TOKEN_TYPE = "auth_token_type"
+        private const val ACCESS_TOKEN = "access_token"
+        private const val REFRESH_TOKEN = "refresh_token"
 
         @Suppress("UNUSED")
         @JvmStatic

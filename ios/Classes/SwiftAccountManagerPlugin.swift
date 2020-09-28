@@ -23,10 +23,7 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
                                     $0[constAccountName] == args[constAccountName] }) {
                 accounts.append([
                     constAccountName: args[constAccountName],
-                    constAccountType: args[constAccountType],
-                    constAuthTokenType: args[constAuthTokenType],
-                    constAccessToken: args[constAccessToken],
-                    constRefreshToken: args[constRefreshToken]
+                    constAccountType: args[constAccountType]
                 ]);
                 preferences.set(accounts, forKey: constAccountsPreference);
                 result(true);
@@ -55,10 +52,7 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
         for account in accounts {
             data.append([
                 constAccountName: account[constAccountName],
-                constAccountType: account[constAccountType],
-                constAuthTokenType: account[constAuthTokenType],
-                constAccessToken: account[constAccessToken],
-                constRefreshToken: account[constRefreshToken]
+                constAccountType: account[constAccountType]
             ])
         }
         result(accounts);

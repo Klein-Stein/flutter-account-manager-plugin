@@ -5,13 +5,15 @@ import 'package:flutter/services.dart';
 class Account {
   String name;
   String accountType;
-  String authTokenType;
-  String accessToken;
-  String refreshToken;
 
+  Account(this.name, this.accountType);
+}
 
-  Account(this.name, this.accountType, this.authTokenType,
-          this.accessToken, this.refreshToken);
+class AccessToken {
+  String tokenType;
+  String token;
+
+  AccessToken(this.tokenType, this.token);
 }
 
 class AccountManager {
@@ -23,43 +25,45 @@ class AccountManager {
   static const String _KeyAccessToken = 'access_token';
   static const String _KeyRefreshToken = 'refresh_token';
 
-  static Future<void> addAccount(Account account) async {
-    try {
-      await _channel.invokeMethod('addAccount', {
-        _KeyAccountName: account.name,
-        _KeyAccountType: account.accountType,
-        _KeyAuthTokenType: account.authTokenType,
-        _KeyAccessToken: account.accessToken,
-        _KeyRefreshToken: account.refreshToken
-      });
-    } catch(e, s) {
-      print(e);
-      print(s);
-    }
+  static Future<bool> addAccount(Account account) async {
+    return await _channel.invokeMethod('addAccount', {
+      _KeyAccountName: account.name,
+      _KeyAccountType: account.accountType
+    });
   }
 
-  static Future<List<dynamic>> getAccounts() async {
+  static Future<bool> addAccessToken(Account account, AccessToken token) async {
+    return await _channel.invokeMethod('addAccessToken', {
+      _KeyAccountName: account.name,
+      _KeyAccountType: account.accountType,
+      _KeyAuthTokenType: token.tokenType,
+      _KeyAccessToken: token.token
+    });
+  }
+
+  static Future<AccessToken> getAccessToken(Account account) async {
+    var accessToken;
+    final res = await _channel.invokeMethod('getAccessToken', {
+      _KeyAccountName: account.name,
+      _KeyAccountType: account.accountType
+    });
+    if (res != null) {
+      accessToken = AccessToken(res[_KeyAuthTokenType], res[_KeyAccessToken]);
+    }
+    return accessToken;
+  }
+
+  static Future<List<Account>> getAccounts() async {
     var accounts = [];
-    try {
-      final result = await _channel.invokeMethod('getAccounts');
-      for (var item in result) {
-        accounts.add(new Account(
-            item[_KeyAccountName],
-            item[_KeyAccountType],
-            item[_KeyAuthTokenType],
-            item[_KeyAccessToken],
-            item[_KeyRefreshToken]
-        ));
-      }
-    } catch(e, s) {
-      print(e);
-      print(s);
+    final result = await _channel.invokeMethod('getAccounts');
+    for (var item in result) {
+      accounts.add(new Account(item[_KeyAccountName], item[_KeyAccountType]));
     }
     return accounts;
   }
 
-  static Future<void> removeAccount(Account account) async {
-    await _channel.invokeMethod('removeAccount', {
+  static Future<bool> removeAccount(Account account) async {
+    return await _channel.invokeMethod('removeAccount', {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType
     });
