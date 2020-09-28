@@ -65,7 +65,6 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        print(call.method);
         switch (call.method) {
         case "addAccount":
             addAccount(call, result: result);

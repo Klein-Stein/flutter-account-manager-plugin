@@ -21,7 +21,7 @@ class AccountManager {
   static const String _KeyAccountType = 'account_type';
   static const String _KeyAuthTokenType = 'auth_token_type';
   static const String _KeyAccessToken = 'access_token';
-  static const String _KeyRefreshToken = 'refreshToken';
+  static const String _KeyRefreshToken = 'refresh_token';
 
   static Future<void> addAccount(Account account) async {
     try {
@@ -44,7 +44,11 @@ class AccountManager {
       final result = await _channel.invokeMethod('getAccounts');
       for (var item in result) {
         accounts.add(new Account(
-            item[_KeyAccountName], item[_KeyAccountType], null, null, null
+            item[_KeyAccountName],
+            item[_KeyAccountType],
+            item[_KeyAuthTokenType],
+            item[_KeyAccessToken],
+            item[_KeyRefreshToken]
         ));
       }
     } catch(e, s) {

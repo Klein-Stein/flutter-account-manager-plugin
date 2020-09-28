@@ -23,7 +23,7 @@ class HomeWidget extends StatelessWidget {
           await AccountManager.removeAccount(account);
         }
       }
-      var account = new Account('User 007', kAccountType);
+      var account = new Account('User 007', kAccountType, '', '', '');
       await AccountManager.addAccount(account);
       accounts = await AccountManager.getAccounts();
       for (Account account in accounts) {
