@@ -32,15 +32,6 @@ class AccountManager {
     });
   }
 
-  static Future<bool> addAccessToken(Account account, AccessToken token) async {
-    return await _channel.invokeMethod('addAccessToken', {
-      _KeyAccountName: account.name,
-      _KeyAccountType: account.accountType,
-      _KeyAuthTokenType: token.tokenType,
-      _KeyAccessToken: token.token
-    });
-  }
-
   static Future<AccessToken> getAccessToken(Account account) async {
     var accessToken;
     final res = await _channel.invokeMethod('getAccessToken', {
@@ -67,5 +58,17 @@ class AccountManager {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType
     });
+  }
+
+  static Future<bool> setAccessToken(Account account, AccessToken token) async {
+    final data = {
+      _KeyAccountName: account.name,
+      _KeyAccountType: account.accountType
+    };
+    if (token != null) {
+      data[_KeyAuthTokenType] = token.tokenType;
+      data[_KeyAccessToken] = token.token;
+    }
+    return await _channel.invokeMethod('setAccessToken', data);
   }
 }

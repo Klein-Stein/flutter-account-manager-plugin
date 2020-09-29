@@ -33,6 +33,34 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
         result(false);
     }
     
+    private func getAccounts(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        var data: [[String: String?]] = [];
+        let preferences = UserDefaults.standard;
+        let accounts = preferences.array(forKey: constAccountsPreference) as? [[String:String]] ?? [[String: String]]();
+        for account in accounts {
+            data.append([
+                constAccountName: account[constAccountName],
+                constAccountType: account[constAccountType]
+            ])
+        }
+        result(data);
+    }
+    
+    private func getAccessToken(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        var data: [String: String?]? = nil;
+        let preferences = UserDefaults.standard;
+        let accounts = preferences.array(forKey: constAccountsPreference) as? [[String:String]] ?? [[String: String]]();
+        for account in accounts {
+            if account[constAccessToken] != nil {
+                data = [
+                    constAuthTokenType: account[constAuthTokenType],
+                    constAccessToken: account[constAccessToken]
+                ]
+            }
+        }
+        result(data);
+    }
+
     private func removeAccount(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let args = call.arguments as? [String: String] {
             let preferences = UserDefaults.standard;
@@ -45,17 +73,27 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    private func getAccounts(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        var data: [[String: String?]] = [];
-        let preferences = UserDefaults.standard;
-        let accounts = preferences.array(forKey: constAccountsPreference) as? [[String:String]] ?? [[String: String]]();
-        for account in accounts {
-            data.append([
-                constAccountName: account[constAccountName],
-                constAccountType: account[constAccountType]
-            ])
+    private func setAccessToken(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if let args = call.arguments as? [String: String] {
+            let preferences = UserDefaults.standard;
+            let accounts = preferences.array(forKey: constAccountsPreference) as? [[String: String?]] ?? [[String: String?]]();
+            var account = accounts.filter { $0[constAccountType] == args[constAccountType] || $0[constAccountName] == args[constAccountName] }.first;
+            if account != nil {
+                if args[constAuthTokenType] != nil {
+                    account![constAuthTokenType] = args[constAuthTokenType]
+                } else if account![constAuthTokenType] != nil {
+                    account?.removeValue(forKey: constAuthTokenType)
+                }
+                if args[constAccessToken] != nil {
+                    account![constAccessToken] = args[constAccessToken]
+                } else if account![constAccessToken] != nil {
+                    account?.removeValue(forKey: constAccessToken)
+                }
+                preferences.set(accounts, forKey: constAccountsPreference);
+                result(true);
+            }
         }
-        result(accounts);
+        result(false);
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -63,12 +101,16 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
         case "addAccount":
             addAccount(call, result: result);
             break;
-        case "removeAccount":
-            removeAccount(call, result: result);
-            break;
         case "getAccounts":
             getAccounts(call, result: result);
             break;
+        case "getAccessToken":
+            getAccessToken(call, result: result);
+        case "removeAccount":
+            removeAccount(call, result: result);
+            break;
+        case "setAccessToken":
+            setAccessToken(call, result: result);
         default:
             result(false);
         }

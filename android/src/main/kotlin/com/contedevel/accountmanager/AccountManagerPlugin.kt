@@ -5,7 +5,9 @@ import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -44,6 +46,19 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         }
     }
 
+    private fun setAccessToken(call: MethodCall, result: Result) {
+        activity?.let {
+            val accountName = call.argument<String>(ACCOUNT_NAME)
+            val accountType = call.argument<String>(ACCOUNT_TYPE)
+            val authTokenType = call.argument<String>(AUTH_TOKEN_TYPE)
+            val accessToken = call.argument<String>(ACCESS_TOKEN)
+            val account = Account(accountName, accountType)
+            val accountManager = AccountManager.get(it)
+            accountManager.setAuthToken(account, authTokenType, accessToken)
+            result.success(true)
+        }
+    }
+
     private fun getAccounts(result: Result) {
         activity?.let {
             val accounts = AccountManager.get(activity).accounts
@@ -55,6 +70,30 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
                 ))
             }
             result.success(list)
+        }
+    }
+
+    private fun getAccessToken(call: MethodCall, result: Result) {
+        activity?.let {
+            val accountName = call.argument<String>(ACCOUNT_NAME)
+            val accountType = call.argument<String>(ACCOUNT_TYPE)
+            val authTokenType = call.argument<String>(AUTH_TOKEN_TYPE)
+            val account = Account(accountName, accountType)
+            AccountManager.get(activity).getAuthToken(account, authTokenType, null, false,
+                    { data ->
+                        val bundle: Bundle = data.result
+                        bundle.getString(AccountManager.KEY_AUTHTOKEN)?.let { token ->
+                            result.success(hashMapOf(
+                                    AUTH_TOKEN_TYPE to authTokenType,
+                                    ACCESS_TOKEN to token
+                            ))
+                        }
+                    },
+                    Handler(Looper.getMainLooper()) {
+                        result.success(null)
+                        true
+                    }
+            )
         }
     }
 
@@ -94,7 +133,9 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         when (call.method) {
             "addAccount" -> addAccount(call, result)
             "getAccounts" -> getAccounts(result)
+            "getAccessToken" -> getAccessToken(call, result)
             "removeAccount" -> removeAccount(call, result)
+            "setAccessToken" -> setAccessToken(call, result)
             else -> result.notImplemented()
         }
     }
@@ -148,7 +189,6 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         private const val ACCOUNT_TYPE = "account_type"
         private const val AUTH_TOKEN_TYPE = "auth_token_type"
         private const val ACCESS_TOKEN = "access_token"
-        private const val REFRESH_TOKEN = "refresh_token"
 
         @Suppress("UNUSED")
         @JvmStatic
