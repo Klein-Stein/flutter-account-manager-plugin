@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.NonNull
-import androidx.core.app.ActivityCompat
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -31,7 +30,7 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     private var activity: Activity? = null
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "accountManager")
+        channel = MethodChannel(flutterPluginBinding.getFlutterEngine().dartExecutor, "accountManager")
         channel.setMethodCallHandler(this)
     }
 
@@ -97,19 +96,19 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         }
     }
 
-    private fun peekAccounts(result: Result) {
-        if (activity != null) {
-            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                AccountManager.newChooseAccountIntent(null, null, null, null, null, null, null)
-            } else {
-                AccountManager.newChooseAccountIntent(null, null, null, false, null, null, null, null)
-            }
-            ActivityCompat.startActivityForResult(activity!!, intent, REQUEST_CODE, null)
-            result.success(true)
-        } else {
-            result.success(false)
-        }
-    }
+//    private fun peekAccounts(result: Result) {
+//        if (activity != null) {
+//            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                AccountManager.newChooseAccountIntent(null, null, null, null, null, null, null)
+//            } else {
+//                AccountManager.newChooseAccountIntent(null, null, null, false, null, null, null, null)
+//            }
+//            ActivityCompat.startActivityForResult(activity!!, intent, REQUEST_CODE, null)
+//            result.success(true)
+//        } else {
+//            result.success(false)
+//        }
+//    }
 
     private fun removeAccount(call: MethodCall, result: Result) {
         activity?.let {

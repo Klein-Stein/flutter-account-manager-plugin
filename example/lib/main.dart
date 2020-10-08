@@ -17,20 +17,30 @@ class HomeWidget extends StatelessWidget {
     } else if (permission != PermissionStatus.granted) {
       name = null;
     } else {
-      var accounts = await AccountManager.getAccounts();
-      for (Account account in accounts) {
-        if (account.accountType == kAccountType) {
-          await AccountManager.removeAccount(account);
+      try {
+        var accounts = await AccountManager.getAccounts();
+        for (Account account in accounts) {
+          if (account.accountType == kAccountType) {
+            await AccountManager.removeAccount(account);
+          }
         }
-      }
-      var account = new Account('User 007', kAccountType, '', '', '');
-      await AccountManager.addAccount(account);
-      accounts = await AccountManager.getAccounts();
-      for (Account account in accounts) {
-        if (account.accountType == kAccountType) {
-          name = account.name;
-          break;
+        var account = new Account('User 007', kAccountType);
+        if (await AccountManager.addAccount(account)) {
+          var token = new AccessToken('Bearer', 'Blah-Blah');
+          await AccountManager.setAccessToken(account, token);
+          accounts = await AccountManager.getAccounts();
+          for (Account account in accounts) {
+            if (account.accountType == kAccountType) {
+              token = await AccountManager.getAccessToken(account,
+                  token.tokenType);
+              name = account.name + ' - ' + token.token;
+              break;
+            }
+          }
         }
+      } catch(e, s) {
+        print(e);
+        print(s);
       }
     }
     return name;
