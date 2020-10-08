@@ -26,7 +26,7 @@ class HomeWidget extends StatelessWidget {
         }
         var account = new Account('User 007', kAccountType);
         if (await AccountManager.addAccount(account)) {
-          var token = new AccessToken('Bearer', 'Blah-Blah');
+          var token = new AccessToken('Bearer', 'Blah-Blah code');
           await AccountManager.setAccessToken(account, token);
           accounts = await AccountManager.getAccounts();
           for (Account account in accounts) {
@@ -70,7 +70,6 @@ class HomeWidget extends StatelessWidget {
         )
     );
   }
-
 }
 
 void main() => runApp(MaterialApp(

@@ -4,10 +4,7 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -18,7 +15,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import java.util.concurrent.TimeUnit
 
 
 class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
@@ -30,7 +26,7 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
     private var activity: Activity? = null
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.getFlutterEngine().dartExecutor, "accountManager")
+        channel = MethodChannel(flutterPluginBinding.flutterEngine.dartExecutor, "accountManager")
         channel.setMethodCallHandler(this)
     }
 
@@ -111,21 +107,23 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
 //    }
 
     private fun removeAccount(call: MethodCall, result: Result) {
-        activity?.let {
+        if (activity != null) {
             val accountName = call.argument<String>(ACCOUNT_NAME)
             val accountType = call.argument<String>(ACCOUNT_TYPE)
-            val accountManager = AccountManager.get(it)
+            val accountManager = AccountManager.get(activity)
             val account = Account(accountName, accountType)
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
-                val future = accountManager.removeAccount(account, {}, Handler())
-                result.success(future.getResult(2, TimeUnit.SECONDS))
+                accountManager.removeAccount(account, null, null)
+                // TODO: Need to wait for result from AccountManager.removeAccount()
+                result.success(true)
             } else {
                 val wasRemoved = accountManager.removeAccountExplicitly(account)
                 result.success(wasRemoved)
             }
+        } else {
+            result.success(false)
         }
-        result.success(false)
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
