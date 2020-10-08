@@ -23,7 +23,6 @@ class AccountManager {
   static const String _KeyAccountType = 'account_type';
   static const String _KeyAuthTokenType = 'auth_token_type';
   static const String _KeyAccessToken = 'access_token';
-  // static const String _KeyRefreshToken = 'refresh_token';
 
   static Future<bool> addAccount(Account account) async {
     return await _channel.invokeMethod('addAccount', {

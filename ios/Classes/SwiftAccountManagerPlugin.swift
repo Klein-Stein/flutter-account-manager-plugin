@@ -7,7 +7,7 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
     public let constAccountType = "account_type";
     public let constAuthTokenType = "auth_token_type";
     public let constAccessToken = "access_token";
-    public let constRefreshToken = "refresh_token";
+    public let constTokens = "tokens";
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "accountManager", binaryMessenger: registrar.messenger())
@@ -18,12 +18,13 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
     private func addAccount(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let args = call.arguments as? [String: String] {
             let preferences = UserDefaults.standard;
-            var accounts = preferences.array(forKey: constAccountsPreference) as? [[String: String?]] ?? [[String: String?]]();
-            if !accounts.contains(where: { $0[constAccountType] == args[constAccountType] &&
-                                    $0[constAccountName] == args[constAccountName] }) {
+            var accounts = preferences.array(forKey: constAccountsPreference) as? [[String: Any]] ?? [[String: Any]]();
+            if !accounts.contains(where: { $0[constAccountType] as? String == args[constAccountType] &&
+                                    $0[constAccountName] as? String == args[constAccountName] }) {
                 accounts.append([
-                    constAccountName: args[constAccountName],
-                    constAccountType: args[constAccountType]
+                    constAccountName: args[constAccountName] as Any,
+                    constAccountType: args[constAccountType] as Any,
+                    constTokens: [:]
                 ]);
                 preferences.set(accounts, forKey: constAccountsPreference);
                 result(true);
@@ -36,26 +37,31 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
     private func getAccounts(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         var data: [[String: String?]] = [];
         let preferences = UserDefaults.standard;
-        let accounts = preferences.array(forKey: constAccountsPreference) as? [[String:String]] ?? [[String: String]]();
+        let accounts = preferences.array(forKey: constAccountsPreference) as? [[String: Any]] ?? [[String: Any]]();
         for account in accounts {
             data.append([
-                constAccountName: account[constAccountName],
-                constAccountType: account[constAccountType]
+                constAccountName: account[constAccountName] as? String,
+                constAccountType: account[constAccountType] as? String
             ])
         }
         result(data);
     }
     
     private func getAccessToken(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        var data: [String: String?]? = nil;
-        let preferences = UserDefaults.standard;
-        let accounts = preferences.array(forKey: constAccountsPreference) as? [[String:String]] ?? [[String: String]]();
-        for account in accounts {
-            if account[constAccessToken] != nil {
-                data = [
-                    constAuthTokenType: account[constAuthTokenType],
-                    constAccessToken: account[constAccessToken]
-                ]
+        var data: [String: String]? = nil;
+        if let args = call.arguments as? [String: String?] {
+            let preferences = UserDefaults.standard;
+            let accounts = preferences.array(forKey: constAccountsPreference) as? [[String: Any]] ?? [[String: Any]]();
+            let account = accounts.filter { $0[constAccountType] as? String == args[constAccountType] || $0[constAccountName] as? String == args[constAccountName] }.first;
+            if account != nil {
+                let tokens = account![constTokens] as! [String: String];
+                let accessToken = tokens[args[constAuthTokenType]!!];
+                if accessToken != nil {
+                    data = [
+                        constAuthTokenType: args[constAuthTokenType]!!,
+                        constAccessToken: accessToken!
+                    ];
+                }
             }
         }
         result(data);
@@ -64,8 +70,8 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
     private func removeAccount(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let args = call.arguments as? [String: String] {
             let preferences = UserDefaults.standard;
-            var accounts = preferences.array(forKey: constAccountsPreference) as? [[String: String?]] ?? [[String: String?]]();
-            accounts = accounts.filter { $0[constAccountType] != args[constAccountType] || $0[constAccountName] != args[constAccountName] };
+            var accounts = preferences.array(forKey: constAccountsPreference) as? [[String: Any]] ?? [[String: Any]]();
+            accounts = accounts.filter { $0[constAccountType] as? String != args[constAccountType] || $0[constAccountName] as? String != args[constAccountName] };
             preferences.set(accounts, forKey: constAccountsPreference);
             result(true);
         } else {
@@ -74,21 +80,22 @@ public class SwiftAccountManagerPlugin: NSObject, FlutterPlugin {
     }
     
     private func setAccessToken(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        if let args = call.arguments as? [String: String] {
+        if let args = call.arguments as? [String: String?] {
             let preferences = UserDefaults.standard;
-            let accounts = preferences.array(forKey: constAccountsPreference) as? [[String: String?]] ?? [[String: String?]]();
-            var account = accounts.filter { $0[constAccountType] == args[constAccountType] || $0[constAccountName] == args[constAccountName] }.first;
+            var accounts = preferences.array(forKey: constAccountsPreference) as? [[String: Any]] ?? [[String: Any]]();
+            var account = accounts.filter { $0[constAccountType] as? String == args[constAccountType] || $0[constAccountName] as? String == args[constAccountName] }.first;
             if account != nil {
-                if args[constAuthTokenType] != nil {
-                    account![constAuthTokenType] = args[constAuthTokenType]
-                } else if account![constAuthTokenType] != nil {
-                    account?.removeValue(forKey: constAuthTokenType)
+                var tokens = account![constTokens] as! [String: String]
+                if args[constAccessToken] == nil {
+                    if tokens.index(forKey: args[constAuthTokenType]!!) != nil {
+                        tokens.removeValue(forKey: args[constAuthTokenType]!!);
+                    }
+                } else {
+                    tokens[args[constAuthTokenType]!!] = args[constAccessToken]!!
                 }
-                if args[constAccessToken] != nil {
-                    account![constAccessToken] = args[constAccessToken]
-                } else if account![constAccessToken] != nil {
-                    account?.removeValue(forKey: constAccessToken)
-                }
+                accounts = accounts.filter { $0[constAccountType] as? String != args[constAccountType] || $0[constAccountName] as? String != args[constAccountName] };
+                account![constTokens] = tokens;
+                accounts.append(account!);
                 preferences.set(accounts, forKey: constAccountsPreference);
                 result(true);
             }
