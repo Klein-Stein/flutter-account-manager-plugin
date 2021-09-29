@@ -6,16 +6,16 @@ import 'package:accountmanager/accountmanager.dart';
 class HomeWidget extends StatelessWidget {
   static const kAccountType = 'com.contedevel.account';
 
-  Future<String> fetchName() async {
-    String name;
-    final permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.contacts);
-    if (permission == PermissionStatus.unknown || permission == PermissionStatus.denied) {
-      final permissions = await PermissionHandler().requestPermissions([PermissionGroup.contacts]);
-      if (permissions[PermissionGroup.contacts] != PermissionStatus.granted) {
-        name = null;
+Future<String> fetchName() async {
+    String name = '';
+    var permission = await Permission.contacts.status;
+    if (permission.isDenied) {
+      final permissions = await Permission.contacts.request();
+      if (!permissions.isGranted) {
+        name = '';
       }
     } else if (permission != PermissionStatus.granted) {
-      name = null;
+      name = '';
     } else {
       try {
         var accounts = await AccountManager.getAccounts();

@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class Account {
-  String name;
-  String accountType;
+  String? name;
+  String? accountType;
 
   Account(this.name, this.accountType);
 }
 
 class AccessToken {
-  String tokenType;
-  String token;
+  String? tokenType;
+  String? token;
 
   AccessToken(this.tokenType, this.token);
 }
@@ -24,14 +24,14 @@ class AccountManager {
   static const String _KeyAuthTokenType = 'auth_token_type';
   static const String _KeyAccessToken = 'access_token';
 
-  static Future<bool> addAccount(Account account) async {
+  static Future<bool?> addAccount(Account account) async {
     return await _channel.invokeMethod('addAccount', {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType
     });
   }
 
-  static Future<AccessToken> getAccessToken(Account account,
+  static Future<AccessToken?> getAccessToken(Account account,
       String authTokenType) async {
     var accessToken;
     final res = await _channel.invokeMethod('getAccessToken', {
@@ -48,20 +48,21 @@ class AccountManager {
   static Future<List<Account>> getAccounts() async {
     List<Account> accounts = [];
     final result = await _channel.invokeMethod('getAccounts');
+    print(result);
     for (var item in result) {
       accounts.add(new Account(item[_KeyAccountName], item[_KeyAccountType]));
     }
     return accounts;
   }
 
-  static Future<bool> removeAccount(Account account) async {
+  static Future<bool?> removeAccount(Account account) async {
     return await _channel.invokeMethod('removeAccount', {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType
     });
   }
 
-  static Future<bool> setAccessToken(Account account, AccessToken token) async {
+  static Future<bool?> setAccessToken(Account account, AccessToken token) async {
     final data = {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType
