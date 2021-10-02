@@ -18,7 +18,7 @@ class HomeWidget extends StatelessWidget {
         }
         var account = new Account(name: 'User 007', accountType: kAccountType);
         if (await AccountManager.addAccount(account)) {
-          var token = new AccessToken(
+          AccessToken? token = new AccessToken(
               tokenType: 'Bearer',
               token: 'Blah-Blah code'
           );
@@ -27,8 +27,10 @@ class HomeWidget extends StatelessWidget {
           for (Account account in accounts) {
             if (account.accountType == kAccountType) {
               token = await AccountManager.getAccessToken(account,
-                  token.tokenType);
-              name = account.name + ' - ' + token.token;
+                  token!.tokenType);
+              if (token != null) {
+                name = account.name + ' - ' + token.token;
+              }
               break;
             }
           }
