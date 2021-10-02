@@ -2,6 +2,10 @@
 
 Account manager for Flutter
 
+Supported platforms:
+- Android 8.1+ (API 27+)
+- iOS 12+
+
 ## Getting Started
 
 ### Installation
@@ -10,7 +14,7 @@ Add package to your dependencies in **pubspec.yaml**:
 
  ```
 dependencies:
-   accountmanager: ^0.1.0
+   accountmanager: ^0.2.0
 ```
 
 And call `flutter pub get` to download new dependencies
@@ -120,17 +124,17 @@ And register `AuthenticatorService`:
 </service>
 ```
 
-On Android 6.0+ and iOS devices you also need to request permissions at the runtime. We advice to 
+On Android and iOS devices you also need to request permissions at the runtime. We advice to 
 use [permission_handler](https://pub.dev/packages/permission_handler) (the example of using in our 
 repository).
 
 ```
 dependencies:
-  permission_handler: '^4.4.0+hotfix.2'
+  permission_handler: ^8.1.6
 ```
 
 More details about Android authentication system you can find on 
 [Android Developers resource](https://developer.android.com/training/id-auth/custom_auth).
 
-WARNING: iOS doesn't provide AccountManager entity, our plugin emulates it using 
+**WARNING:** iOS doesn't provide AccountManager entity, our plugin emulates it using 
 `UserDefaults.standard` to store all data.

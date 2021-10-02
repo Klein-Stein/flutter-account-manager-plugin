@@ -7,16 +7,8 @@ class HomeWidget extends StatelessWidget {
   static const kAccountType = 'com.contedevel.account';
 
   Future<String> fetchName() async {
-    String name;
-    final permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.contacts);
-    if (permission == PermissionStatus.unknown || permission == PermissionStatus.denied) {
-      final permissions = await PermissionHandler().requestPermissions([PermissionGroup.contacts]);
-      if (permissions[PermissionGroup.contacts] != PermissionStatus.granted) {
-        name = null;
-      }
-    } else if (permission != PermissionStatus.granted) {
-      name = null;
-    } else {
+    String name = '';
+    if (await Permission.contacts.request().isGranted) {
       try {
         var accounts = await AccountManager.getAccounts();
         for (Account account in accounts) {
@@ -24,16 +16,21 @@ class HomeWidget extends StatelessWidget {
             await AccountManager.removeAccount(account);
           }
         }
-        var account = new Account('User 007', kAccountType);
+        var account = new Account(name: 'User 007', accountType: kAccountType);
         if (await AccountManager.addAccount(account)) {
-          var token = new AccessToken('Bearer', 'Blah-Blah code');
+          AccessToken? token = new AccessToken(
+              tokenType: 'Bearer',
+              token: 'Blah-Blah code'
+          );
           await AccountManager.setAccessToken(account, token);
           accounts = await AccountManager.getAccounts();
           for (Account account in accounts) {
             if (account.accountType == kAccountType) {
               token = await AccountManager.getAccessToken(account,
-                  token.tokenType);
-              name = account.name + ' - ' + token.token;
+                  token!.tokenType);
+              if (token != null) {
+                name = account.name + ' - ' + token.token;
+              }
               break;
             }
           }
@@ -59,7 +56,7 @@ class HomeWidget extends StatelessWidget {
               String text = 'Loading...';
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData && snapshot.data != null) {
-                  text = snapshot.data;
+                  text = snapshot.data!;
                 } else {
                   text = 'Failed';
                 }
