@@ -112,15 +112,8 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
             val accountType = call.argument<String>(ACCOUNT_TYPE)
             val accountManager = AccountManager.get(activity)
             val account = Account(accountName, accountType)
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
-                accountManager.removeAccount(account, null, null)
-                // TODO: Need to wait for result from AccountManager.removeAccount()
-                result.success(true)
-            } else {
-                val wasRemoved = accountManager.removeAccountExplicitly(account)
-                result.success(wasRemoved)
-            }
+            val wasRemoved = accountManager.removeAccountExplicitly(account)
+            result.success(wasRemoved)
         } else {
             result.success(false)
         }

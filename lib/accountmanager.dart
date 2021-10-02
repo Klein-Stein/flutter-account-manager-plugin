@@ -37,9 +37,9 @@ class AccountManager {
     });
   }
 
-  static Future<AccessToken> getAccessToken(Account account,
+  static Future<AccessToken?> getAccessToken(Account account,
       String authTokenType) async {
-    var accessToken;
+    AccessToken? accessToken;
     final res = await _channel.invokeMethod('getAccessToken', {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType,
