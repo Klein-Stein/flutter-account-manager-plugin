@@ -6,14 +6,20 @@ class Account {
   String name;
   String accountType;
 
-  Account(this.name, this.accountType);
+  Account({
+    required this.name,
+    required this.accountType
+  });
 }
 
 class AccessToken {
   String tokenType;
   String token;
 
-  AccessToken(this.tokenType, this.token);
+  AccessToken({
+    required this.tokenType,
+    required this.token
+  });
 }
 
 class AccountManager {
@@ -40,7 +46,10 @@ class AccountManager {
       _KeyAuthTokenType: authTokenType
     });
     if (res != null) {
-      accessToken = AccessToken(res[_KeyAuthTokenType], res[_KeyAccessToken]);
+      accessToken = AccessToken(
+        tokenType: res[_KeyAuthTokenType],
+        token: res[_KeyAccessToken],
+      );
     }
     return accessToken;
   }
@@ -49,7 +58,12 @@ class AccountManager {
     List<Account> accounts = [];
     final result = await _channel.invokeMethod('getAccounts');
     for (var item in result) {
-      accounts.add(new Account(item[_KeyAccountName], item[_KeyAccountType]));
+      accounts.add(
+          new Account(
+              name: item[_KeyAccountName],
+              accountType: item[_KeyAccountType]
+          )
+      );
     }
     return accounts;
   }
@@ -61,7 +75,8 @@ class AccountManager {
     });
   }
 
-  static Future<bool> setAccessToken(Account account, AccessToken token) async {
+  static Future<bool> setAccessToken(Account account, AccessToken? token
+      ) async {
     final data = {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType

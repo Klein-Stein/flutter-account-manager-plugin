@@ -10,7 +10,7 @@ Add package to your dependencies in **pubspec.yaml**:
 
  ```
 dependencies:
-   accountmanager: ^0.1.0
+   accountmanager: ^0.2.0
 ```
 
 And call `flutter pub get` to download new dependencies

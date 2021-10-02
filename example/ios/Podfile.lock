@@ -1,0 +1,34 @@
+PODS:
+  - accountmanager (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - "permission_handler (5.1.0+2)":
+    - Flutter
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - accountmanager (from `.symlinks/plugins/accountmanager/ios`)
+  - Flutter (from `Flutter`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
+
+EXTERNAL SOURCES:
+  accountmanager:
+    :path: ".symlinks/plugins/accountmanager/ios"
+  Flutter:
+    :path: Flutter
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
+
+SPEC CHECKSUMS:
+  accountmanager: d39d4968d0a658538d3250c0aebdfc3b9a096148
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  webview_flutter_wkwebview: 44aa025fbcf6730d808f1e0d86a5af5ac25fa8de
+
+PODFILE CHECKSUM: aed61054358b774c64b986869f86853a56bb124c
+
+COCOAPODS: 1.11.2
