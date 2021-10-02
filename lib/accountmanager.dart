@@ -22,6 +22,8 @@ class AccessToken {
   });
 }
 
+/// Represents some APIs from Android account manager and emulates it on iOS
+/// platform
 class AccountManager {
   static const MethodChannel _channel = const MethodChannel('accountManager');
 
@@ -30,6 +32,8 @@ class AccountManager {
   static const String _KeyAuthTokenType = 'auth_token_type';
   static const String _KeyAccessToken = 'access_token';
 
+  /// Adds the [account] to the account manager on Android and user preferences
+  /// on iOS
   static Future<bool> addAccount(Account account) async {
     return await _channel.invokeMethod('addAccount', {
       _KeyAccountName: account.name,
@@ -37,6 +41,7 @@ class AccountManager {
     });
   }
 
+  /// Returns an access token by [account] and [authTokenType]
   static Future<AccessToken?> getAccessToken(Account account,
       String authTokenType) async {
     AccessToken? accessToken;
@@ -54,6 +59,7 @@ class AccountManager {
     return accessToken;
   }
 
+  /// Returns a list of accounts
   static Future<List<Account>> getAccounts() async {
     List<Account> accounts = [];
     final result = await _channel.invokeMethod('getAccounts');
@@ -68,6 +74,7 @@ class AccountManager {
     return accounts;
   }
 
+  /// Deletes the [account]
   static Future<bool> removeAccount(Account account) async {
     return await _channel.invokeMethod('removeAccount', {
       _KeyAccountName: account.name,
@@ -75,6 +82,7 @@ class AccountManager {
     });
   }
 
+  /// Saves the access [token] for the passed [account]
   static Future<bool> setAccessToken(Account account, AccessToken? token
       ) async {
     final data = {
