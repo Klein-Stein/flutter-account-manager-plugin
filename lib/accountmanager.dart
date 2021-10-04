@@ -31,6 +31,7 @@ class AccountManager {
   static const String _KeyAccountType = 'account_type';
   static const String _KeyAuthTokenType = 'auth_token_type';
   static const String _KeyAccessToken = 'access_token';
+  static const String _KeyUserDataKey = "user_data_key";
 
   /// Adds the [account] to the account manager on Android and user preferences
   /// on iOS
@@ -38,6 +39,16 @@ class AccountManager {
     return await _channel.invokeMethod('addAccount', {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType
+    });
+  }
+
+  /// Get the userData from account manager on Android, not implemented on iOS
+  /// On android: https://developer.android.com/reference/android/accounts/AccountManager#getUserData(android.accounts.Account,%20java.lang.String)
+  static Future<String> getUserData(Account account, String key) async{
+    return await _channel.invokeMethod("getUserData", {
+      _KeyAccountName: account.name,
+      _KeyAccountType: account.accountType,
+      _KeyUserDataKey: key,
     });
   }
 
