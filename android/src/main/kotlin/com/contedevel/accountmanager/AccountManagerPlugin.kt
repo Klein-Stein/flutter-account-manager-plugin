@@ -54,6 +54,20 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         }
     }
 
+    private fun setUserData(call: MethodCall, result: Result) {
+        activity?.let {
+            val accountName = call.argument<String>(ACCOUNT_NAME)
+            val accountType = call.argument<String>(ACCOUNT_TYPE)
+            val userDataKey = call.argument<String>(USER_DATA_KEY)
+            val userData = call.argument<String>(USER_DATA)
+
+            val accountManager = AccountManager.get(it)
+            val account = Account(accountName, accountType)
+            accountManager.setUserData(account, userDataKey, userData)
+            result.success(true)
+        }
+    }
+
     private fun setAccessToken(call: MethodCall, result: Result) {
         activity?.let {
             val accountName = call.argument<String>(ACCOUNT_NAME)
@@ -136,6 +150,7 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         when (call.method) {
             "addAccount" -> addAccount(call, result)
             "getUserData" -> getUserData(call, result)
+            "setUserData" -> setUserData(call, result)
             "getAccounts" -> getAccounts(result)
             "getAccessToken" -> getAccessToken(call, result)
             "removeAccount" -> removeAccount(call, result)
@@ -194,6 +209,7 @@ class AccountManagerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, Pl
         private const val AUTH_TOKEN_TYPE = "auth_token_type"
         private const val ACCESS_TOKEN = "access_token"
         private const val USER_DATA_KEY = "user_data_key"
+        private const val USER_DATA = "user_data"
 
         @Suppress("UNUSED")
         @JvmStatic
