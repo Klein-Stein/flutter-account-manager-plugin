@@ -44,7 +44,7 @@ class AccountManager {
 
   /// Get the userData from account manager on Android, not implemented on iOS
   /// On android: https://developer.android.com/reference/android/accounts/AccountManager#getUserData(android.accounts.Account,%20java.lang.String)
-  static Future<String> getUserData(Account account, String key) async{
+  static Future<String?> getUserData(Account account, String key) async{
     return await _channel.invokeMethod("getUserData", {
       _KeyAccountName: account.name,
       _KeyAccountType: account.accountType,
