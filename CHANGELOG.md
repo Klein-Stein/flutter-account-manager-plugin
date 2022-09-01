@@ -9,3 +9,10 @@
 * Minimum Android API version increased up to 27 (Android 8.1)
 * Minimum iOS version increased up to 12.0
 * Updated docs
+
+### 0.3.0
+
+* Set the target Android version to API 33
+* Set the minimal iOS version to 12.0
+* Upgraded dependencies
+* Replaced a deprecated code

@@ -2,7 +2,7 @@ PODS:
   - accountmanager (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - "permission_handler (5.1.0+2)":
+  - permission_handler_apple (9.0.4):
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
@@ -10,7 +10,7 @@ PODS:
 DEPENDENCIES:
   - accountmanager (from `.symlinks/plugins/accountmanager/ios`)
   - Flutter (from `Flutter`)
-  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 EXTERNAL SOURCES:
@@ -18,16 +18,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/accountmanager/ios"
   Flutter:
     :path: Flutter
-  permission_handler:
-    :path: ".symlinks/plugins/permission_handler/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   webview_flutter_wkwebview:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
   accountmanager: d39d4968d0a658538d3250c0aebdfc3b9a096148
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  webview_flutter_wkwebview: 44aa025fbcf6730d808f1e0d86a5af5ac25fa8de
+  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
+  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
 PODFILE CHECKSUM: aed61054358b774c64b986869f86853a56bb124c
 
