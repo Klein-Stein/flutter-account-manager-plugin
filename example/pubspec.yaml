@@ -3,18 +3,18 @@ description: Demonstrates how to use the accountmanager plugin.
 publish_to: 'none'
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=2.14.0 <=2.18.0"
 
 dependencies:
-  permission_handler: ^8.1.6
-  webview_flutter: ^2.1.1
-  http: ^0.13.3
+  permission_handler: ^10.0.0
+  webview_flutter: ^3.0.4
+  http: ^0.13.5
   flutter:
     sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.3
+  cupertino_icons: ^1.0.5
 
   accountmanager:
     path: ../
